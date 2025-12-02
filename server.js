@@ -33,9 +33,13 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: 'UP', service: 'StringValidatorAPI' });
 });
 
+let server;
 
-app.listen(port, '0.0.0.0', () => {
-    console.log(`Server running at http://0.0.0.0:${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+    server = app.listen(port, '0.0.0.0', () => {
+        console.log(`Server running at http://0.0.0.0:${port}`);
+    });
+}
 
-module.exports = { isValidUrl };
+// Nous exportons l'application Express pour que les tests puissent utiliser Supertest
+module.exports = { app, server, isValidUrl };
