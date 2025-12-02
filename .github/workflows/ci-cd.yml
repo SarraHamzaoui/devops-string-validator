@@ -30,7 +30,7 @@ jobs:
         run: npm install 
 
       - name: Run Unit Tests
-        run: npm test
+        run: NODE_ENV=test npm test
 
       - name: SAST - Dependency Check (Simulated)
         run: npm audit --audit-level=high

@@ -1,4 +1,4 @@
-const { isValidUrl } = require('./server');
+const { isValidUrl, server, app } = require('./server');
 
 describe('isValidUrl', () => {
     test('should return true for a valid HTTP URL', () => {
@@ -20,4 +20,14 @@ describe('isValidUrl', () => {
     test('should return false for null or empty input', () => {
         expect(isValidUrl('')).toBe(false);
     });
+
+
+}
+);
+afterAll(done => {
+    if (server) {
+        server.close(done);
+    } else {
+        done();
+    }
 });
