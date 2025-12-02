@@ -26,11 +26,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies (including devDependencies for tests)
+      - name: Install dependencies
         run: npm install 
 
-      #- name: Run Unit Tests
-       # run: npm test
+      - name: Run Unit Tests
+        run: npm test
 
       - name: SAST - Dependency Check (Simulated)
         run: npm audit --audit-level=high
