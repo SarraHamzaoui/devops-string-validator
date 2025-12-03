@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  validator-api:
+    image: sarrahamz/devops-validator-api:latest
+    container_name: validator-api
+    ports:
+      - "5000:5000"
+    networks:
+      - monitoring-net
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - "D:\\DevOps\\String validator\\monitoring\\prometheus.yml:/etc/prometheus/prometheus.yml"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    depends_on:
+      - validator-api
+    networks:
+      - monitoring-net
+
+networks:
+  monitoring-net:
+    driver: bridge
