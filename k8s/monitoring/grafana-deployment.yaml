@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana:latest
+        ports:
+        - containerPort: 3000
+        env: 
+        - name: GF_SECURITY_ADMIN_USER
+          value: admin
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          value: admin
+        - name: GF_DATASOURCES_JSON
+          value: '[{"name": "Prometheus", "type": "prometheus", "url": "http://prometheus-service:8087", "isDefault": true}]'
+        volumeMounts:
+        - name: grafana-storage-volume
+          mountPath: /var/lib/grafana
+      volumes:
+      - name: grafana-storage-volume
+        persistentVolumeClaim:
+          claimName: grafana-pvc

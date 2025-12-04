@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service #le load Balancer
+metadata:
+  name: validator-service 
+  labels: 
+    scrape-me: "true"
+spec:
+  selector:
+    app: validator-api 
+  ports:
+    - protocol: TCP
+      port: 80 
+      targetPort: 5000 # Le port de mon application
+      nodePort: 30007 # Le port pour accéder à l'API depuis ma machine hôte (via l'IP de kind)
+  type: NodePort
