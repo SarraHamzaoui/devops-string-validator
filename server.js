@@ -1,25 +1,30 @@
 const express = require('express');
 const pinoHttp = require('pino-http');
 const pino = require('pino');
-
 const client = require('prom-client');
+const helmet = require('helmet');
+
 const app = express();
 const port = 5000;
 
-const logger = pino({ name: 'string-validator-api' });
 
+app.disable('x-powered-by');
+app.use(helmet());
+app.use(helmet.noSniff());
+app.use(helmet.hidePoweredBy());
+
+
+const logger = pino({ name: 'string-validator-api' });
 app.use(pinoHttp({ logger }));
 
 const collectDefaultMetrics = client.collectDefaultMetrics;
 collectDefaultMetrics({ prefix: 'node_app_' });
-
 
 const totalRequests = new client.Counter({
     name: 'http_requests_total',
     help: 'Total number of HTTP requests',
     labelNames: ['method', 'route', 'status_code'],
 });
-
 
 const requestDuration = new client.Histogram({
     name: 'http_request_duration_seconds',
@@ -46,17 +51,6 @@ app.use((req, res, next) => {
     next();
 });
 
-
-function isValidUrl(str) {
-    try {
-        new URL(str);
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
-
-
 app.get('/metrics', async (req, res) => {
     try {
         res.set('Content-Type', client.register.contentType);
@@ -66,6 +60,15 @@ app.get('/metrics', async (req, res) => {
         res.status(500).end(ex);
     }
 });
+
+function isValidUrl(str) {
+    try {
+        new URL(str);
+        return true;
+    } catch (_) {
+        return false;
+    }
+}
 
 app.get('/api/v1/validate', (req, res) => {
     const input = req.query.input;
@@ -88,6 +91,10 @@ app.get('/api/v1/validate', (req, res) => {
 
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'UP', service: 'StringValidatorAPI' });
+});
+
+app.use((req, res) => {
+    res.status(404).json({ error: "Route not found" });
 });
 
 let server;
