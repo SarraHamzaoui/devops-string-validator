@@ -1,4 +1,4 @@
-const { isValidUrl, server, app } = require('./server');
+const { isValidUrl, server } = require('./server');
 
 describe('isValidUrl', () => {
     test('should return true for a valid HTTP URL', () => {

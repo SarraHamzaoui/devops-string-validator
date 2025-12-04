@@ -17,5 +17,6 @@ spec:
       containers:
       - name: validator-api-container
         image: sarrahamz/devops-validator-api:latest 
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000 
