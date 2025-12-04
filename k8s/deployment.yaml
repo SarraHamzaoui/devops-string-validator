@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: validator-deployment 
+  labels:
+    app: validator-api
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: validator-api
+  template:
+    metadata:
+      labels:
+        app: validator-api
+    spec:
+      containers:
+      - name: validator-api-container
+        image: sarrahamz/devops-validator-api:latest 
+        ports:
+        - containerPort: 5000 
